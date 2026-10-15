@@ -1,5 +1,5 @@
 ```yaml
-name: Build Tauri Android APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -7,35 +7,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate Project Files
-        run: node setup.js
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Generate Default Icon
-        run: |
-          curl -L https://tauri.app/img/icon.png -o icon.png
-          npx tauri icon icon.png
-
-      - name: Initialize Android Project
-        run: npx tauri android init
+          node-version: 20
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: 21
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -45,8 +29,15 @@ jobs:
         with:
           targets: aarch64-linux-android
 
-      - name: Build Android APK
-        run: npx tauri android build --apk
+      - name: Generate Project
+        run: node setup.js
+
+      - name: Build Tauri Android
+        run: |
+          npm install
+          npx tauri icon icon.png || true
+          npx tauri android init
+          npx tauri android build --apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
