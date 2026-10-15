@@ -1,4 +1,3 @@
-```yaml
 name: Build Android APK
 
 on:
@@ -45,4 +44,3 @@ jobs:
           name: android-apk
           path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           retention-days: 7
-```
